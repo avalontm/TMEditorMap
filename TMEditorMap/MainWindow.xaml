@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TMEditorMap" 
-        xmlns:engine="clr-namespace:TMEditorMap.Engine"
+        xmlns:engine="clr-namespace:TMEditorMap.Engine" xmlns:ctrl="clr-namespace:TMEditorMap.UserControls"
         mc:Ignorable="d"
         Title="Mapa Editor" Height="600" Width="800" WindowStartupLocation="CenterScreen" Loaded="onLoaded" Unloaded="onUnloaded">
 
@@ -26,7 +26,51 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
+                    <Grid Grid.Row="0">
+                        <Grid Margin="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0" Content="Grupos" FontSize="16" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
+                            <ComboBox Grid.Row="1" SelectedIndex="{Binding GroupIndex}" FontSize="18" FontWeight="DemiBold" SelectionChanged="onGroupSelectionChanged" >
+                                <ComboBoxItem IsSelected="True">Pisos</ComboBoxItem>
+                                <ComboBoxItem>Bordes</ComboBoxItem>
+                                <ComboBoxItem>Arboles</ComboBoxItem>
+                                <ComboBoxItem>Items</ComboBoxItem>
+                                <ComboBoxItem>Escaleras</ComboBoxItem>
+                                <ComboBoxItem>Paredes</ComboBoxItem>
+                            </ComboBox>
+                        </Grid>
+                    </Grid>
+                    
+                    <Grid Grid.Row="1">
+                        <ListBox Margin="2" Name="lstSprites" HorizontalContentAlignment="Stretch" SelectionChanged="onSelectSpriteChanged">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="32" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Text="{Binding name}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        
+                                        <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
+                                            <Image Source="{Binding image}" Width="32" Height="32" Stretch="Uniform"/>
+                                        </Border>
+                                        
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </Grid>
 
                 <Grid Grid.Column="1">
@@ -34,5 +78,7 @@
                 </Grid>
             </Grid>
         </DockPanel>
+
+        <ctrl:LoadingItemsControl x:Name="gridItems" Visibility="Hidden"/>
     </Grid>
 </Window>
