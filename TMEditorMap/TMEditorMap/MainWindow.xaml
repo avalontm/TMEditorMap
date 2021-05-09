@@ -1,0 +1,38 @@
+﻿<Window x:Class="TMEditorMap.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TMEditorMap" 
+        xmlns:engine="clr-namespace:TMEditorMap.Engine"
+        mc:Ignorable="d"
+        Title="Mapa Editor" Height="600" Width="800" WindowStartupLocation="CenterScreen" Loaded="onLoaded" Unloaded="onUnloaded">
+
+    <Grid>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File" FontSize="16">
+                    <MenuItem Header="_New" Click="onNew"/>
+                    <MenuItem Header="_Open" Click="onOpen"/>
+                    <MenuItem Header="_Save" Click="onSave"/>
+                    <Separator />
+                    <MenuItem Header="_Exit" Click="onExit"/>
+                </MenuItem>
+            </Menu>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <engine:MapCore  />
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>
