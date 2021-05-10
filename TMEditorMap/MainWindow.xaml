@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TMEditorMap" 
-        xmlns:engine="clr-namespace:TMEditorMap.Engine" xmlns:ctrl="clr-namespace:TMEditorMap.UserControls"
+        xmlns:engine="clr-namespace:TMEditorMap.Engine" 
+        xmlns:ctrl="clr-namespace:TMEditorMap.UserControls"
         mc:Ignorable="d"
-        Title="Mapa Editor" Height="600" Width="800" WindowStartupLocation="CenterScreen" Loaded="onLoaded" Unloaded="onUnloaded">
-
+        Title="Mapa Editor" Height="600" Width="800" WindowStartupLocation="CenterScreen" Loaded="onLoaded" Unloaded="onUnloaded" ResizeMode="CanResize" SizeChanged="onSizeChanged">
+    
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
@@ -29,6 +30,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0">
@@ -36,10 +38,23 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Label Grid.Row="0" Content="Grupos" FontSize="16" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
-                            <ComboBox Grid.Row="1" SelectedIndex="{Binding GroupIndex}" FontSize="18" FontWeight="DemiBold" SelectionChanged="onGroupSelectionChanged" >
+                            <Grid Grid.Row="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Content="Seleccion" FontSize="14" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
+                                <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Image Source="{Binding ItemSelect.Image}" Width="32" Height="32" Stretch="Uniform"/>
+                                </Border>
+                               
+                            </Grid>
+                            
+                            <Label Grid.Row="1" Content="Grupos" FontSize="14" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
+                            <ComboBox Grid.Row="2" SelectedIndex="{Binding GroupIndex}" FontSize="18" FontWeight="DemiBold" SelectionChanged="onGroupSelectionChanged" >
                                 <ComboBoxItem IsSelected="True">Pisos</ComboBoxItem>
                                 <ComboBoxItem>Bordes</ComboBoxItem>
                                 <ComboBoxItem>Arboles</ComboBoxItem>
@@ -60,10 +75,10 @@
                                             <ColumnDefinition Width="32" />
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock Grid.Column="0" Text="{Binding name}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                         
                                         <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                                            <Image Source="{Binding image}" Width="32" Height="32" Stretch="Uniform"/>
+                                            <Image Source="{Binding Image}" Width="32" Height="32" Stretch="Uniform"/>
                                         </Border>
                                         
                                     </Grid>
@@ -71,10 +86,39 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
+                            <Label Margin="5,0,0,0" Content="{Binding Source={x:Static engine:MapCore.Instance}, Path=Mouse.X, StringFormat='X: {0}', FallbackValue='X: 0', Mode=OneWay}" FontSize="14" FontWeight="DemiBold"/>
+                        </Grid>
+
+                        <Grid Grid.Column="1">
+                            <Label Margin="5,0,0,0" Content="{Binding Source={x:Static engine:MapCore.Instance}, Path=Mouse.Y, StringFormat='Y: {0}', FallbackValue='Y: 0', Mode=OneWay}" FontSize="14" FontWeight="DemiBold"/>
+                        </Grid>
+                    </Grid>
                 </Grid>
 
                 <Grid Grid.Column="1">
-                    <engine:MapCore  />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <engine:MapCore Margin="1"/>
+                        <ScrollBar Grid.Column="1" x:Name="vScroll" Orientation="Vertical" Maximum="0"  ValueChanged="onScrollVerticalChanged" />
+                    </Grid>
+
+                    <ScrollBar Grid.Row="1" x:Name="hScroll" Orientation="Horizontal" Maximum="0" ValueChanged="onScrollHorizontalChanged" />
                 </Grid>
             </Grid>
         </DockPanel>

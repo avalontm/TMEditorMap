@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using TMEditorMap.Engine;
+using TMFormat.Formats;
 
 namespace TMEditorMap.Helpers
 {
@@ -47,6 +50,13 @@ namespace TMEditorMap.Helpers
             }
         }
 
+        public static Texture2D ToTexture2D(this byte[] byteArray)
+        {
+            using (MemoryStream stream = new MemoryStream(byteArray))
+            {
+               return Texture2D.FromStream(MapCore.Instance.DeviceManager.GraphicsDevice, stream);
+            }
+        }
 
     }
 }
