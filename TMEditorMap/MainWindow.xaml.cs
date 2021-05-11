@@ -1,22 +1,13 @@
 ﻿using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using TMEditorMap.Engine;
 using TMEditorMap.Helpers;
 using TMFormat;
@@ -82,6 +73,18 @@ namespace TMEditorMap
             {
                 _itemSelect = value;
                 OnPropertyChanged("ItemSelect");
+            }
+        }
+
+        Point _mouse = new Point();
+
+        public Point Mouse
+        {
+            get { return _mouse; }
+            set
+            {
+                _mouse = value;
+                OnPropertyChanged("Mouse");
             }
         }
         #endregion
@@ -270,6 +273,11 @@ namespace TMEditorMap
         void onScrollVerticalChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             MapManager.Camera.ToMove((int)hScroll.Value, (int)vScroll.Value);
+        }
+
+        void onMouseMove(object sender, MouseEventArgs e)
+        {
+            Mouse = new Point((MapCore.Instance.MouseState.X/TMBaseMap.TileSize), (MapCore.Instance.MouseState.Y/TMBaseMap.TileSize));
         }
     }
 }

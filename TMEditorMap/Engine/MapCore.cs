@@ -74,28 +74,6 @@ namespace TMEditorMap.Engine
             }
         }
 
-
-        int _mouseX;
-        public int MouseX
-        {
-            get { return _mouseX; }
-            set
-            {
-                _mouseX = value;
-                OnPropertyChanged("MouseX");
-            }
-        }
-
-        int _mouseY;
-        public int MouseY
-        {
-            get { return _mouseY; }
-            set
-            {
-                _mouseY = value;
-                OnPropertyChanged("MouseY");
-            }
-        }
         #endregion
 
         public MapCore()
@@ -106,7 +84,7 @@ namespace TMEditorMap.Engine
 
         protected override void Initialize()
         {
-            
+            Instance = this;
             // must be initialized. required by Content loading and rendering (will add itself to the Services)
             // note that MonoGame requires this to be initialized in the constructor, while WpfInterop requires it to
             // be called inside Initialize (before base.Initialize())
@@ -137,9 +115,6 @@ namespace TMEditorMap.Engine
             // every update we can now query the keyboard & mouse for our WpfGame
             MouseState = _mouse.GetState();
             KeyboardState = _keyboard.GetState();
-
-            MouseX = MouseState.X;
-            MouseY = MouseState.Y;
 
             /*
             if (KeyboardState.GetPressedKeys().Length > 0)
