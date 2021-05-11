@@ -120,7 +120,7 @@ namespace TMEditorMap
         void onOpen(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "TMap files (*.tmap)|*.tmap";
+            openFileDialog.Filter = "TMap files (*.tmap)|*.tmap;*.abomap";
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -147,7 +147,40 @@ namespace TMEditorMap
 
         void onSave(object sender, RoutedEventArgs e)
         {
+            if (!string.IsNullOrEmpty(FileMap))
+            {
+                onSaveMap();
+                return;
+            }
 
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "TMap files (*.tmap)|*.tmap";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                FileMap = saveFileDialog.FileName;
+
+                if (!File.Exists(FileMap))
+                {
+                    return;
+                }
+
+                onSaveMap();
+            }
+        }
+
+        void onSaveMap()
+        {
+            bool result = MapManager.MapBase.Save(FileMap);
+
+            if (result)
+            {
+                MessageBox.Show(this, "Se ha guardado el archivo.", "Guardado", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show(this, "No se pudo guardar el archivo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         void onExit(object sender, RoutedEventArgs e)

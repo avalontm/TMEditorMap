@@ -35,7 +35,7 @@ namespace TMEditorMap.Engine
 
         public static void Draw(GameTime time) 
         {
-            if (MapBase != null)
+            if (MapBase != null && MapBase.Floors.Count > 0)
             {
                 onDrawFloorCurrent();
             }
