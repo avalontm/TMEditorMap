@@ -16,7 +16,7 @@ namespace TMEditorMap.Engine
     {
         #region Propiedades
 
-        public static int FloorDefault = 7;
+        public static readonly int FloorDefault = 7;
         public static int FloorCurrent = FloorDefault;
 
         public static TMBaseMap MapBase;

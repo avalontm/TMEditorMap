@@ -52,7 +52,7 @@ namespace TMEditorMap.Engine
         }
 
         MouseState _mouseState;
-        public MouseState Mouse
+        public MouseState MouseState
         {
             get { return _mouseState; }
             set
@@ -62,8 +62,9 @@ namespace TMEditorMap.Engine
             }
         }
 
+        KeyboardState _previousState;
         KeyboardState _keyboardState;
-        public KeyboardState Keyboard
+        public KeyboardState KeyboardState
         {
             get { return _keyboardState; }
             set
@@ -73,11 +74,34 @@ namespace TMEditorMap.Engine
             }
         }
 
+
+        int _mouseX;
+        public int MouseX
+        {
+            get { return _mouseX; }
+            set
+            {
+                _mouseX = value;
+                OnPropertyChanged("MouseX");
+            }
+        }
+
+        int _mouseY;
+        public int MouseY
+        {
+            get { return _mouseY; }
+            set
+            {
+                _mouseY = value;
+                OnPropertyChanged("MouseY");
+            }
+        }
         #endregion
 
         public MapCore()
         {
             Instance = this;
+            Debug.WriteLine("[MapCore] Instance");
         }
 
         protected override void Initialize()
@@ -111,15 +135,45 @@ namespace TMEditorMap.Engine
         protected override void Update(GameTime time)
         {
             // every update we can now query the keyboard & mouse for our WpfGame
-            Mouse = _mouse.GetState();
-            Keyboard = _keyboard.GetState();
+            MouseState = _mouse.GetState();
+            KeyboardState = _keyboard.GetState();
+
+            MouseX = MouseState.X;
+            MouseY = MouseState.Y;
+
+            /*
+            if (KeyboardState.GetPressedKeys().Length > 0)
+            {
+                Debug.WriteLine($"[KeyboardState] {KeyboardState.GetPressedKeys()[0].ToString()}");
+            }
+            */
+
+            if (MapManager.MapBase != null)
+            {
+                if (KeyboardState.IsKeyDown(Keys.OemPlus) && !_previousState.IsKeyDown(Keys.OemPlus) || KeyboardState.IsKeyDown(Keys.Add) && !_previousState.IsKeyDown(Keys.Add))
+                {
+                    if (MapManager.FloorCurrent > 0)
+                    {
+                        MapManager.FloorCurrent--;
+                    }
+                }
+                if (KeyboardState.IsKeyDown(Keys.OemMinus) && !_previousState.IsKeyDown(Keys.OemMinus) || KeyboardState.IsKeyDown(Keys.Subtract) && !_previousState.IsKeyDown(Keys.Subtract))
+                {
+                    if (MapManager.FloorCurrent < MapManager.MapBase.Floors.Count)
+                    {
+                        MapManager.FloorCurrent++;
+                    }
+                }
+            }
+
+            _previousState = KeyboardState;
         }
 
         protected override void Draw(GameTime time)
         {
             base.Draw(time);
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             _spriteBatch.Begin();
            
             MapManager.Draw(time);

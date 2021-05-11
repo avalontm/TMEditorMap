@@ -94,11 +94,11 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid Grid.Column="0">
-                            <Label Margin="5,0,0,0" Content="{Binding Source={x:Static engine:MapCore.Instance}, Path=Mouse.X, StringFormat='X: {0}', FallbackValue='X: 0', Mode=OneWay}" FontSize="14" FontWeight="DemiBold"/>
+                            <Label Margin="5,0,0,0" Content="{Binding Source={x:Static engine:MapCore.Instance}, Path=MouseX, StringFormat='X: {0}', FallbackValue='X: 0'}" FontSize="14" FontWeight="DemiBold"/>
                         </Grid>
 
                         <Grid Grid.Column="1">
-                            <Label Margin="5,0,0,0" Content="{Binding Source={x:Static engine:MapCore.Instance}, Path=Mouse.Y, StringFormat='Y: {0}', FallbackValue='Y: 0', Mode=OneWay}" FontSize="14" FontWeight="DemiBold"/>
+                            <Label Margin="5,0,0,0" Content="{Binding Source={x:Static engine:MapCore.Instance}, Path=MouseY, StringFormat='Y: {0}', FallbackValue='Y: 0'}" FontSize="14" FontWeight="DemiBold"/>
                         </Grid>
                     </Grid>
                 </Grid>
