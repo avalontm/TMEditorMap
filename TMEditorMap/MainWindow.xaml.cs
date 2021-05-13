@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -10,7 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using TMEditorMap.Engine;
 using TMEditorMap.Helpers;
+using TMEditorMap.Models;
 using TMFormat;
+using TMFormat.Enums;
 using TMFormat.Formats;
 using TMFormat.Helpers;
 
@@ -40,6 +44,20 @@ namespace TMEditorMap
                 OnPropertyChanged("sprites");
             }
         }
+
+        ObservableCollection<GroupSprites> _groups;
+
+        public ObservableCollection<GroupSprites> groups
+        {
+            get { return _groups; }
+            set
+            {
+                _groups = value;
+                OnPropertyChanged("groups");
+            }
+        }
+
+        
 
         int _groupIndex;
         public int GroupIndex
@@ -87,6 +105,19 @@ namespace TMEditorMap
                 OnPropertyChanged("Mouse");
             }
         }
+
+        bool _isLoaded;
+
+        public bool isLoaded
+        {
+            get { return _isLoaded; }
+            set
+            {
+                _isLoaded = value;
+                OnPropertyChanged("isLoaded");
+            }
+        }
+
         #endregion
 
         public MainWindow()
@@ -100,6 +131,7 @@ namespace TMEditorMap
         {
             TMInstance.Init(false, true);
             onLoadItems();
+            isLoaded = true;
         }
 
         void onUnloaded(object sender, RoutedEventArgs e)
@@ -210,6 +242,13 @@ namespace TMEditorMap
 
             int index = 0;
 
+            groups = new ObservableCollection<GroupSprites>();
+
+            for (int i = 0; i < Enum.GetNames(typeof(TypeItem)).Length; i++)
+            {
+                groups.Add(new GroupSprites());
+            }
+
             foreach (var item in MapManager.Items)
             {
                 if (item.Textures.Count > 0)
@@ -223,13 +262,54 @@ namespace TMEditorMap
                     item.Sprites.Add(new TMSpriteTexture() { Sprite1 = text.Texture1.ToTexture2D(), Sprite2 = text.Texture2.ToTexture2D(), Sprite3 = text.Texture3.ToTexture2D(), Sprite4 = text.Texture4.ToTexture2D() });
                 }
 
-                sprites.Add(item);
+
+                switch ((TypeItem)item.Type)
+                {
+                    case TypeItem.Tile:
+                        groups[0].Items.Add(item);
+                        break;
+
+                    case TypeItem.Border:
+                        groups[1].Items.Add(item);
+                        break;
+
+                    case TypeItem.Field:
+                        groups[2].Items.Add(item);
+                        break;
+
+                    case TypeItem.Item:
+                        groups[3].Items.Add(item);
+                        break;
+
+                    case TypeItem.Tree:
+                        groups[4].Items.Add(item);
+                        break;
+
+                    case TypeItem.Wall:
+                        groups[5].Items.Add(item);
+                        break;
+
+                    case TypeItem.Stair:
+                        groups[6].Items.Add(item);
+                        break;
+
+                    case TypeItem.Door:
+                        groups[7].Items.Add(item);
+                        break;
+                }
+
+                
                 index++;
                 gridItems.barItems.Value = index;
                 await Task.Delay(1);
             }
 
-            lstSprites.ItemsSource = sprites;
+            if (GroupIndex >= 0)
+            {
+                sprites = new ObservableCollection<TMSprite>(groups[GroupIndex].Items);
+                lstSprites.ItemsSource = sprites;
+            }
+           
             gridItems.Visibility = Visibility.Hidden;
             await Task.Delay(1);
 
@@ -237,15 +317,26 @@ namespace TMEditorMap
 
         void onSelectSpriteChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lstSprites.SelectedIndex >= 0)
+            if (isLoaded)
             {
-                ItemSelect = sprites[lstSprites.SelectedIndex] as TMSprite;
+                if (lstSprites.SelectedIndex >= 0)
+                {
+                    ItemSelect = sprites[lstSprites.SelectedIndex] as TMSprite;
+                }
             }
         }
 
         void onGroupSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            if (isLoaded)
+            {
+                if (GroupIndex >= 0)
+                {
+                    sprites = new ObservableCollection<TMSprite>(groups[GroupIndex].Items);
+                    lstSprites.ItemsSource = sprites;
+                    
+                }
+            }
         }
 
         void onLoadMap()
@@ -277,7 +368,7 @@ namespace TMEditorMap
 
         void onMouseMove(object sender, MouseEventArgs e)
         {
-            Mouse = new Point((MapCore.Instance.MouseState.X/TMBaseMap.TileSize), (MapCore.Instance.MouseState.Y/TMBaseMap.TileSize));
+            Mouse = new Point((MapCore.Instance.MouseState.X/TMBaseMap.TileSize) + MapManager.Camera.Scroll.X, (MapCore.Instance.MouseState.Y/TMBaseMap.TileSize) + MapManager.Camera.Scroll.Y);
         }
     }
 }

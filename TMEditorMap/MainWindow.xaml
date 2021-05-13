@@ -55,18 +55,20 @@
                             
                             <Label Grid.Row="1" Content="Grupos" FontSize="14" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
                             <ComboBox Grid.Row="2" SelectedIndex="{Binding GroupIndex}" FontSize="18" FontWeight="DemiBold" SelectionChanged="onGroupSelectionChanged" >
-                                <ComboBoxItem IsSelected="True">Pisos</ComboBoxItem>
-                                <ComboBoxItem>Bordes</ComboBoxItem>
-                                <ComboBoxItem>Arboles</ComboBoxItem>
+                                <ComboBoxItem IsSelected="True">Tiles</ComboBoxItem>
+                                <ComboBoxItem>Borders</ComboBoxItem>
+                                <ComboBoxItem>Fields</ComboBoxItem>
                                 <ComboBoxItem>Items</ComboBoxItem>
-                                <ComboBoxItem>Escaleras</ComboBoxItem>
-                                <ComboBoxItem>Paredes</ComboBoxItem>
+                                <ComboBoxItem>Trees</ComboBoxItem>
+                                <ComboBoxItem>Walls</ComboBoxItem>
+                                <ComboBoxItem>Stairs</ComboBoxItem>
+                                <ComboBoxItem>Doors</ComboBoxItem>
                             </ComboBox>
                         </Grid>
                     </Grid>
                     
                     <Grid Grid.Row="1">
-                        <ListBox Margin="2" Name="lstSprites" HorizontalContentAlignment="Stretch" SelectionChanged="onSelectSpriteChanged">
+                        <ListBox Margin="2" Name="lstSprites" ItemsSource="{Binding sprites}" HorizontalContentAlignment="Stretch" SelectionChanged="onSelectSpriteChanged">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Margin="2">
