@@ -204,6 +204,24 @@ namespace TMEditorMap
             }
         }
 
+        void onSaveAs(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "TMap files (*.tmap)|*.tmap";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                FileMap = saveFileDialog.FileName;
+
+                if (!File.Exists(FileMap))
+                {
+                    return;
+                }
+
+                onSaveMap();
+            }
+        }
+
         void onSaveMap()
         {
             bool result = MapManager.MapBase.Save(FileMap);
@@ -322,6 +340,7 @@ namespace TMEditorMap
                 if (lstSprites.SelectedIndex >= 0)
                 {
                     ItemSelect = sprites[lstSprites.SelectedIndex] as TMSprite;
+                    MapCore.Instance.ItemSelect = ItemSelect;
                 }
             }
         }
@@ -368,7 +387,8 @@ namespace TMEditorMap
 
         void onMouseMove(object sender, MouseEventArgs e)
         {
-            Mouse = new Point((MapCore.Instance.MouseState.X/TMBaseMap.TileSize) + MapManager.Camera.Scroll.X, (MapCore.Instance.MouseState.Y/TMBaseMap.TileSize) + MapManager.Camera.Scroll.Y);
+            Mouse = new Point(MapCore.Instance.GlobalPos.X, MapCore.Instance.GlobalPos.Y);
         }
+
     }
 }

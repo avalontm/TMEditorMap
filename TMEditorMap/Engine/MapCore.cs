@@ -30,6 +30,40 @@ namespace TMEditorMap.Engine
         WpfMouse _mouse;
         RenderTarget2D _rendertarget;
         SpriteBatch _spriteBatch;
+        Texture2D _pointTexture;
+        TMSprite _itemSelect;
+        Vector2 _globalpos;
+
+        Vector2 _screenpos;
+        public Vector2 ScreenPos
+        {
+            get { return _screenpos; }
+            set
+            {
+                _screenpos = value;
+                OnPropertyChanged("ScreenPos");
+            }
+        }
+
+        public Vector2 GlobalPos
+        {
+            get { return _globalpos; }
+            set
+            {
+                _globalpos = value;
+                OnPropertyChanged("GlobalPos");
+            }
+        }
+
+        public TMSprite ItemSelect
+        {
+            get { return _itemSelect; }
+            set
+            {
+                _itemSelect = value;
+                OnPropertyChanged("ItemSelect");
+            }
+        }
 
         public IGraphicsDeviceService DeviceManager
         {
@@ -116,12 +150,8 @@ namespace TMEditorMap.Engine
             MouseState = _mouse.GetState();
             KeyboardState = _keyboard.GetState();
 
-            /*
-            if (KeyboardState.GetPressedKeys().Length > 0)
-            {
-                Debug.WriteLine($"[KeyboardState] {KeyboardState.GetPressedKeys()[0].ToString()}");
-            }
-            */
+            GlobalPos = new Vector2((MouseState.X/ TMBaseMap.TileSize) +MapManager.Camera.Scroll.X, (MouseState.Y / TMBaseMap.TileSize) + MapManager.Camera.Scroll.Y);
+            ScreenPos = new Vector2((MouseState.X / TMBaseMap.TileSize), (MouseState.Y / TMBaseMap.TileSize));
 
             if (MapManager.MapBase != null)
             {
@@ -153,7 +183,46 @@ namespace TMEditorMap.Engine
            
             MapManager.Draw(time);
 
+            DrawTextureSelect(ScreenPos);
+            DrawRectangle(ScreenPos, Color.Red, 2);
+
             _spriteBatch.End();
+        }
+
+        void DrawTextureSelect(Vector2 pos)
+        {
+            if (ItemSelect != null)
+            {
+                Rectangle rectangle = new Rectangle((int)pos.X * TMBaseMap.TileSize, (int)pos.Y * TMBaseMap.TileSize, TMBaseMap.TileSize, TMBaseMap.TileSize);
+                _spriteBatch.Draw(ItemSelect.Sprites[0].Sprite1, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height), Color.White * 0.75f);
+            }
+        }
+
+        void DrawRectangle(Vector2 pos, Color color, int lineWidth)
+        {
+            Rectangle rectangle = new Rectangle((int)pos.X * TMBaseMap.TileSize, (int)pos.Y* TMBaseMap.TileSize, TMBaseMap.TileSize, TMBaseMap.TileSize);
+            if (_pointTexture == null)
+            {
+                _pointTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
+                _pointTexture.SetData<Color>(new Color[] { Color.White });
+            }
+
+            _spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
+            _spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width + lineWidth, lineWidth), color);
+            _spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, lineWidth, rectangle.Height + lineWidth), color);
+            _spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width + lineWidth, lineWidth), color);
+        }
+
+        void DrawBox(Vector2 pos, Color color)
+        {
+            Rectangle rectangle = new Rectangle((int)pos.X, (int)pos.Y, TMBaseMap.TileSize, TMBaseMap.TileSize);
+            if (_pointTexture == null)
+            {
+                _pointTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
+                _pointTexture.SetData<Color>(new Color[] { Color.White });
+            }
+
+            _spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, TMBaseMap.TileSize, TMBaseMap.TileSize), color * 0.5f);
         }
     }
 }

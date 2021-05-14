@@ -12,12 +12,14 @@
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_File" FontSize="16">
-                    <MenuItem Header="_New" Click="onNew"/>
-                    <MenuItem Header="_Open" Click="onOpen"/>
-                    <MenuItem Header="_Save" Click="onSave"/>
+                <MenuItem Header="_Archivo">
+                    <MenuItem Header="_Nuevo" Click="onNew" Template="{DynamicResource MenuItemControlTemplate1}"/>
+                    <MenuItem Header="_Abrir" Click="onOpen" Template="{DynamicResource MenuItemControlTemplate1}"/>
+                    <MenuItem Header="_Guardar" Click="onSave" Template="{DynamicResource MenuItemControlTemplate1}"/>
                     <Separator />
-                    <MenuItem Header="_Exit" Click="onExit"/>
+                    <MenuItem Header="_Guardar Como..." Click="onSaveAs" Template="{DynamicResource MenuItemControlTemplate1}"/>
+                    <Separator />
+                    <MenuItem Header="_Salir" Click="onExit" Template="{DynamicResource MenuItemControlTemplate1}"/>
                 </MenuItem>
             </Menu>
             <Grid>
@@ -120,7 +122,7 @@
                         <ScrollBar Grid.Column="1" x:Name="vScroll" Orientation="Vertical" Maximum="0"  ValueChanged="onScrollVerticalChanged" />
                     </Grid>
 
-                    <ScrollBar Grid.Row="1" x:Name="hScroll" Orientation="Horizontal" Maximum="0" ValueChanged="onScrollHorizontalChanged" />
+                    <ScrollBar Grid.Row="1" Margin="0,0,20,0" x:Name="hScroll" Orientation="Horizontal" Maximum="0" ValueChanged="onScrollHorizontalChanged" />
                 </Grid>
             </Grid>
         </DockPanel>
