@@ -16,6 +16,7 @@ using System.Windows.Media;
 using TMEditorMap.Engine;
 using TMEditorMap.Helpers;
 using TMEditorMap.Models;
+using TMEditorMap.Windows;
 using TMFormat;
 using TMFormat.Enums;
 using TMFormat.Formats;
@@ -181,18 +182,34 @@ namespace TMEditorMap
                     return;
                 }
 
-                MapManager.MapBase = new TMBaseMap(MapManager.Items);
-
-                bool isMapLoaded = MapManager.MapBase.Load(FileMap);
-
-                if (!isMapLoaded)
-                {
-                    MessageBox.Show(this, "No se pudo cargar el archivo.\nFormato desconocido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                onLoadMap();
+                onOpenMap();
             }
+        }
+
+        async void onOpenMap()
+        {
+            await onLoading(true, "Cargando mapa...", 100, true);
+
+            MapManager.MapBase = new TMBaseMap(MapManager.Items);
+
+            bool isMapLoaded = MapManager.MapBase.Load(FileMap);
+
+            if (!isMapLoaded)
+            {
+                await onLoading(false);
+                MessageBox.Show(this, "No se pudo cargar el archivo.\nFormato desconocido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            onLoadMap();
+
+            await onLoading(false);
+        }
+
+        void onLoadMap()
+        {
+            Title = $"{MapManager.MapBase.mapInfo.Name} - [{FileMap}]";
+            onLoadScrolls();
         }
 
         void onSave(object sender, RoutedEventArgs e)
@@ -228,18 +245,27 @@ namespace TMEditorMap
             {
                 FileMap = saveFileDialog.FileName;
 
-                if (!File.Exists(FileMap))
+                if (File.Exists(FileMap))
                 {
-                    return;
+                    var _result = MessageBox.Show(this, "¿Deseas sobreescribir este archivo?", "Confirmar", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+                    if (_result != MessageBoxResult.Yes)
+                    {
+                        return;
+                    }
                 }
 
                 onSaveMap();
             }
         }
 
-        void onSaveMap()
+        async void onSaveMap()
         {
+            await onLoading(true, "Guardando mapa...", 100, true);
+
             bool result = MapManager.MapBase.Save(FileMap);
+
+            await onLoading(false);
 
             if (result)
             {
@@ -256,6 +282,25 @@ namespace TMEditorMap
 
         }
 
+        public async Task onLoading(bool _visible, string _title  = "", int _maximum = 100, bool _IsIndeterminate = false)
+        {
+            if (_visible)
+            {
+                gridWait.Visibility = Visibility.Visible;
+                gridWait.barTitle.Content = _title;
+                gridWait.barProgress.IsIndeterminate = _IsIndeterminate;
+                gridWait.barProgress.Minimum = 0;
+                gridWait.barProgress.Maximum = _maximum;
+
+            }
+            else
+            {
+                gridWait.Visibility = Visibility.Hidden;
+            }
+
+            await Task.Delay(10);
+        }
+
         async void onLoadItems()
         {
             string dataDir = Path.Combine(root, "data");
@@ -267,11 +312,7 @@ namespace TMEditorMap
 
             MapManager.Items = TMItem.Load(Path.Combine(root, "data", "items.dat")).ToSprites();
 
-            gridItems.barItems.Minimum = 0;
-            gridItems.barItems.Maximum = MapManager.Items.Count;
-
-            gridItems.Visibility = Visibility.Visible;
-            await Task.Delay(1);
+            await onLoading (true, "Cargando items...", MapManager.Items.Count);
 
             int index = 0;
 
@@ -333,7 +374,7 @@ namespace TMEditorMap
 
                 
                 index++;
-                gridItems.barItems.Value = index;
+                gridWait.barProgress.Value = index;
                 await Task.Delay(1);
             }
 
@@ -342,10 +383,8 @@ namespace TMEditorMap
                 sprites = new ObservableCollection<TMSprite>(groups[GroupIndex].Items);
                 lstSprites.ItemsSource = sprites;
             }
-           
-            gridItems.Visibility = Visibility.Hidden;
-            await Task.Delay(1);
 
+            await onLoading(false);
         }
 
         void onSelectSpriteChanged(object sender, SelectionChangedEventArgs e)
@@ -376,12 +415,6 @@ namespace TMEditorMap
             }
         }
 
-        void onLoadMap()
-        {
-            Title = $"{MapManager.MapBase.mapInfo.Name} - [{FileMap}]";
-            onLoadScrolls();
-        }
-
         void onLoadScrolls()
         {
             hScroll.Minimum = 0;
@@ -403,7 +436,7 @@ namespace TMEditorMap
             MapManager.Camera.ToMove((int)hScroll.Value, (int)vScroll.Value);
         }
 
-        void onMouseMove(object sender, MouseEventArgs e)
+        void onMapMouseMove(object sender, MouseEventArgs e)
         {
             Mouse = new Point(MapCore.Instance.GlobalPos.X, MapCore.Instance.GlobalPos.Y);
             CurrentFloor = MapManager.FloorCurrent;
@@ -442,6 +475,18 @@ namespace TMEditorMap
 
             button.IsChecked = true;
 
+        }
+
+        void onMapKeyDown(object sender, KeyEventArgs e)
+        {
+            CurrentFloor = MapManager.FloorCurrent;
+        }
+
+        void onMapProperties(object sender, RoutedEventArgs e)
+        {
+            MapInfoWindow frm = new MapInfoWindow();
+            frm.Owner = this;
+            frm.ShowDialog();
         }
     }
 }

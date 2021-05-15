@@ -26,6 +26,8 @@
                     <Separator />
                     <MenuItem Header="_Guardar Como..." Click="onSaveAs" Template="{DynamicResource MenuItemControlTemplate1}"/>
                     <Separator />
+                    <MenuItem Header="_Propiedades" Click="onMapProperties" Template="{DynamicResource MenuItemControlTemplate1}"/>
+                    <Separator />
                     <MenuItem Header="_Salir" Click="onExit" Template="{DynamicResource MenuItemControlTemplate1}"/>
                 </MenuItem>
             </Menu>
@@ -53,116 +55,116 @@
                 </ToggleButton>
             </StackPanel>  
         </Grid>
-            
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
 
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Row="0">
-                        <Grid Margin="2">
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid Margin="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            <Label Grid.Row="0" Content="Seleccion" FontSize="14" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
+                            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Image Source="{Binding ItemSelect.Image}" Width="32" Height="32" Stretch="Uniform"/>
+                            </Border>
 
-                            <Grid Grid.Row="0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Label Grid.Row="0" Content="Seleccion" FontSize="14" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
-                                <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                    <Image Source="{Binding ItemSelect.Image}" Width="32" Height="32" Stretch="Uniform"/>
-                                </Border>
-                               
-                            </Grid>
-                            
-                            <Label Grid.Row="1" Content="Grupos" FontSize="14" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
-                            <ComboBox Grid.Row="2" SelectedIndex="{Binding GroupIndex}" FontSize="18" FontWeight="DemiBold" SelectionChanged="onGroupSelectionChanged" >
-                                <ComboBoxItem IsSelected="True">Tiles</ComboBoxItem>
-                                <ComboBoxItem>Borders</ComboBoxItem>
-                                <ComboBoxItem>Fields</ComboBoxItem>
-                                <ComboBoxItem>Items</ComboBoxItem>
-                                <ComboBoxItem>Trees</ComboBoxItem>
-                                <ComboBoxItem>Walls</ComboBoxItem>
-                                <ComboBoxItem>Stairs</ComboBoxItem>
-                                <ComboBoxItem>Doors</ComboBoxItem>
-                            </ComboBox>
-                        </Grid>
-                    </Grid>
-                    
-                    <Grid Grid.Row="1">
-                        <ListBox Margin="2" Name="lstSprites" ItemsSource="{Binding sprites}" HorizontalContentAlignment="Stretch" SelectionChanged="onSelectSpriteChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="32" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                        
-                                        <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
-                                            <Image Source="{Binding Image}" Width="32" Height="32" Stretch="Uniform"/>
-                                        </Border>
-                                        
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Grid>
-
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid Grid.Column="0">
-                            <Label Margin="5,0,0,0" Content="{Binding Mouse.X, FallbackValue='X: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="X: {0}"/>
                         </Grid>
 
-                        <Grid Grid.Column="1">
-                            <Label Margin="5,0,0,0" Content="{Binding Mouse.Y, FallbackValue='Y: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Y: {0}"/>
-                        </Grid>
-
-                        <Grid Grid.Column="2">
-                            <Label Margin="5,0,0,0" Content="{Binding CurrentFloor, FallbackValue='Z: 7'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Z: {0}"/>
-                        </Grid>
+                        <Label Grid.Row="1" Content="Grupos" FontSize="14" FontWeight="DemiBold" HorizontalContentAlignment="Center"/>
+                        <ComboBox Grid.Row="2" SelectedIndex="{Binding GroupIndex}" FontSize="18" FontWeight="DemiBold" SelectionChanged="onGroupSelectionChanged" >
+                            <ComboBoxItem IsSelected="True">Tiles</ComboBoxItem>
+                            <ComboBoxItem>Borders</ComboBoxItem>
+                            <ComboBoxItem>Fields</ComboBoxItem>
+                            <ComboBoxItem>Items</ComboBoxItem>
+                            <ComboBoxItem>Trees</ComboBoxItem>
+                            <ComboBoxItem>Walls</ComboBoxItem>
+                            <ComboBoxItem>Stairs</ComboBoxItem>
+                            <ComboBoxItem>Doors</ComboBoxItem>
+                        </ComboBox>
                     </Grid>
                 </Grid>
 
-                <Grid Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="auto"/>
-                    </Grid.RowDefinitions>
+                <Grid Grid.Row="1">
+                    <ListBox Margin="2" Name="lstSprites" ItemsSource="{Binding sprites}" HorizontalContentAlignment="Stretch" SelectionChanged="onSelectSpriteChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="32" />
+                                    </Grid.ColumnDefinitions>
 
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <engine:MapCore Margin="1" MouseMove="onMouseMove"/>
-                        <ScrollBar Grid.Column="1" x:Name="vScroll" Orientation="Vertical" Maximum="0"  ValueChanged="onScrollVerticalChanged" />
+                                    <TextBlock Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+                                    <Border Grid.Column="1" BorderBrush="Black" BorderThickness="1">
+                                        <Image Source="{Binding Image}" Width="32" Height="32" Stretch="Uniform"/>
+                                    </Border>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Label Margin="5,0,0,0" Content="{Binding Mouse.X, FallbackValue='X: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="X: {0}"/>
                     </Grid>
 
-                    <ScrollBar Grid.Row="1" Margin="0,0,20,0" x:Name="hScroll" Orientation="Horizontal" Maximum="0" ValueChanged="onScrollHorizontalChanged" />
+                    <Grid Grid.Column="1">
+                        <Label Margin="5,0,0,0" Content="{Binding Mouse.Y, FallbackValue='Y: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Y: {0}"/>
+                    </Grid>
+
+                    <Grid Grid.Column="2">
+                        <Label Margin="5,0,0,0" Content="{Binding CurrentFloor, FallbackValue='Z: 7'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Z: {0}"/>
+                    </Grid>
                 </Grid>
             </Grid>
 
-        <ctrl:LoadingItemsControl x:Name="gridItems" Grid.Row="0" Grid.RowSpan="4" Visibility="Hidden"/>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <engine:MapCore Margin="1" MouseMove="onMapMouseMove" KeyDown="onMapKeyDown"/>
+                    <ScrollBar Grid.Column="1" x:Name="vScroll" Orientation="Vertical" Maximum="0"  ValueChanged="onScrollVerticalChanged" />
+                </Grid>
+
+                <ScrollBar Grid.Row="1" Margin="0,0,20,0" x:Name="hScroll" Orientation="Horizontal" Maximum="0" ValueChanged="onScrollHorizontalChanged" />
+            </Grid>
+        </Grid>
+
+        <ctrl:LoadingItemsControl x:Name="gridWait" Grid.Row="0" Grid.RowSpan="4" Visibility="Hidden"/>
     </Grid>
 </Window>

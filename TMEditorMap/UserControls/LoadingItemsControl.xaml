@@ -17,7 +17,7 @@
             </Grid.RowDefinitions>
             
             <Label x:Name="barTitle" Content="Cargando Items..." Foreground="White" FontSize="18" FontWeight="DemiBold" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-            <ProgressBar Grid.Row="1" Margin="10" x:Name="barItems" Height="32" />
+            <ProgressBar Grid.Row="1" Margin="10" x:Name="barProgress" Height="32" />
         </Grid>
             
     </Grid>

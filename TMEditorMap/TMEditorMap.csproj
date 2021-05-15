@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Windows\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\ic_eraser.png" />
     <Resource Include="Resources\ic_pencil.png" />
     <Resource Include="Resources\ic_shield.png" />

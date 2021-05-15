@@ -1,0 +1,96 @@
+﻿<Window x:Class="TMEditorMap.Windows.MapInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TMEditorMap.Windows"
+        mc:Ignorable="d"
+        Title="Informacion del mapa" Height="450" Width="400" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Loaded="onLoaded" Unloaded="onUnloaded">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            
+        </Grid>
+        
+        <Grid Grid.Row="1">
+            <StackPanel Orientation="Vertical">
+                
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Nombre" FontSize="16" FontWeight="DemiBold"/>
+                    <TextBox Grid.Row="1" Text="{Binding name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Autor" FontSize="16" FontWeight="DemiBold"/>
+                    <TextBox Grid.Row="1" Text="{Binding autor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Version" FontSize="16" FontWeight="DemiBold"/>
+                    <TextBox Grid.Row="1" Text="{Binding version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Label Content="Tamaño" FontSize="16" FontWeight="DemiBold"/>
+
+                    <Grid Grid.Row="1" Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="Ancho" FontSize="16" FontWeight="DemiBold"/>
+                            <TextBox Grid.Row="1" Text="{Binding ancho, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+
+                        <Grid Grid.Column="1" Margin="5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="Alto" FontSize="16" FontWeight="DemiBold"/>
+                            <TextBox Grid.Row="1" Text="{Binding alto, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+                    </Grid>
+                    
+                </Grid>
+
+            </StackPanel>
+            
+        </Grid>
+        
+        <Grid Grid.Row="2">
+            <Button Content="Guardar Cambios" Click="onMapInfoSave"/>
+        </Grid>
+
+
+    </Grid>
+</Window>
