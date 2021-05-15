@@ -23,6 +23,7 @@ namespace TMEditorMap.Engine
         public static List<TMSprite> Items;
         public static CameraManager Camera;
         static MapTile mapTile;
+        public static bool Debug;
 
         #endregion
 

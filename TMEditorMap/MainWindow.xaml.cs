@@ -1,13 +1,16 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using TMEditorMap.Engine;
@@ -103,6 +106,18 @@ namespace TMEditorMap
             {
                 _mouse = value;
                 OnPropertyChanged("Mouse");
+            }
+        }
+
+        int _currentFloor;
+
+        public int CurrentFloor
+        {
+            get { return _currentFloor; }
+            set
+            {
+                _currentFloor = value;
+                OnPropertyChanged("CurrentFloor");
             }
         }
 
@@ -337,10 +352,13 @@ namespace TMEditorMap
         {
             if (isLoaded)
             {
-                if (lstSprites.SelectedIndex >= 0)
+                if (MapCore.Instance.Pincel == PincelStatus.Draw)
                 {
-                    ItemSelect = sprites[lstSprites.SelectedIndex] as TMSprite;
-                    MapCore.Instance.ItemSelect = ItemSelect;
+                    if (lstSprites.SelectedIndex >= 0)
+                    {
+                        ItemSelect = sprites[lstSprites.SelectedIndex] as TMSprite;
+                        MapCore.Instance.ItemSelect = ItemSelect;
+                    }
                 }
             }
         }
@@ -388,7 +406,42 @@ namespace TMEditorMap
         void onMouseMove(object sender, MouseEventArgs e)
         {
             Mouse = new Point(MapCore.Instance.GlobalPos.X, MapCore.Instance.GlobalPos.Y);
+            CurrentFloor = MapManager.FloorCurrent;
         }
 
+        void menu_dibujar(object sender, RoutedEventArgs e)
+        {
+            MapCore.Instance.Pincel = PincelStatus.Draw;
+            menu_item_on(sender, e);
+        }
+
+        void menu_borrar(object sender, RoutedEventArgs e)
+        {
+            MapCore.Instance.Pincel = PincelStatus.Erase;
+            ItemSelect = null;
+            menu_item_on(sender, e);
+        }
+
+        void menu_zona_proteccion(object sender, RoutedEventArgs e)
+        {
+            MapCore.Instance.Pincel = PincelStatus.Protection;
+            ItemSelect = null;
+            menu_item_on(sender, e);
+        }
+
+        void menu_item_on(object sender, RoutedEventArgs e)
+        {
+            ToggleButton button = sender as ToggleButton;
+
+            List<ToggleButton> elements = panelMenu.GetLogicalChildCollection<ToggleButton>();
+
+            for (int i = 0; i < elements.Count; i++)
+            {
+                elements[i].IsChecked = false;
+            }
+
+            button.IsChecked = true;
+
+        }
     }
 }

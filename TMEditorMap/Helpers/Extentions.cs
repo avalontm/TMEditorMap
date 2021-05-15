@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -58,5 +59,23 @@ namespace TMEditorMap.Helpers
             }
         }
 
+        public static List<DependencyObject> FindAllChildren(this DependencyObject dpo, Predicate<DependencyObject> predicate)
+        {
+            var results = new List<DependencyObject>();
+            if (predicate == null)
+                return results;
+
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dpo); i++)
+            {
+                var child = VisualTreeHelper.GetChild(dpo, i);
+                if (predicate(child))
+                    results.Add(child);
+
+                var subChildren = child.FindAllChildren(predicate);
+                results.AddRange(subChildren);
+            }
+            return results;
+        }
     }
 }

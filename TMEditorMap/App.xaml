@@ -271,6 +271,27 @@
             <Setter Property="Border.BorderBrush" Value="#3e3e42"/>
         </Style>
 
+        <Style TargetType="ToggleButton">
+            <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#686868" />
+                </Trigger>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter Property="Background" Value="#2d2d30" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
         <!-- WINDOWS STYLES -->
         <Style TargetType="local:MainWindow" BasedOn="{StaticResource  myWindowStyle}"/>
 

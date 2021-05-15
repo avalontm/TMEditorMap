@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using TMFormat.Enums;
 using TMFormat.Formats;
 
 namespace TMEditorMap.Engine
@@ -108,11 +110,24 @@ namespace TMEditorMap.Engine
             }
         }
 
+        PincelStatus _pincel;
+
+        public PincelStatus Pincel
+        {
+            get { return _pincel; }
+            set
+            {
+                _pincel = value;
+                OnPropertyChanged("Pincel");
+            }
+        }
+
         #endregion
 
         public MapCore()
         {
             Instance = this;
+            Pincel = PincelStatus.Draw;
             Debug.WriteLine("[MapCore] Instance");
         }
 
@@ -164,10 +179,27 @@ namespace TMEditorMap.Engine
                 }
                 if (KeyboardState.IsKeyDown(Keys.OemMinus) && !_previousState.IsKeyDown(Keys.OemMinus) || KeyboardState.IsKeyDown(Keys.Subtract) && !_previousState.IsKeyDown(Keys.Subtract))
                 {
-                    if (MapManager.FloorCurrent < MapManager.MapBase.Floors.Count)
+                    if (MapManager.FloorCurrent < (MapManager.MapBase.Floors.Count-1))
                     {
                         MapManager.FloorCurrent++;
                     }
+                }
+
+                if (MouseState.LeftButton == ButtonState.Pressed)
+                {
+                    switch (Pincel)
+                    {
+                        case PincelStatus.Draw:
+                            onPincel();
+                            break;
+                        case PincelStatus.Erase:
+                            onErase();
+                            break;
+                        case PincelStatus.Protection:
+                            onProtectionZone();
+                            break;
+                    }
+                   
                 }
             }
 
@@ -223,6 +255,121 @@ namespace TMEditorMap.Engine
             }
 
             _spriteBatch.Draw(_pointTexture, new Rectangle(rectangle.X, rectangle.Y, TMBaseMap.TileSize, TMBaseMap.TileSize), color * 0.5f);
+        }
+
+        void onErase()
+        {
+            if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item == null)
+            {
+                return;
+            }
+
+            if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Count == 0) //Si no hay mas item borramos el tile.
+            {
+                MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].isPZ = false;
+                MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item = null;
+                MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = null;
+            }
+
+            if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null) // Items
+            {
+                var item = MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.LastOrDefault();
+
+                if (item != null)
+                {
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Remove(item);
+                } 
+            }
+        }
+
+        void onProtectionZone()
+        {
+            if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item == null)
+            {
+                return;
+            }
+
+            MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].isPZ = true;
+        }
+
+        void onPincel()
+        {
+            if (ItemSelect == null)
+            {
+                return;
+            }
+
+            switch ((TypeItem)ItemSelect.Type)
+            {
+                case TypeItem.Tile:
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item = ItemSelect;
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
+                    }
+
+                    break;
+                case TypeItem.Border:
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item == null)
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item = MapManager.Items[1]; //Item Transparente
+                    }
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
+                    }
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Insert(0, ItemSelect); //Borde en el principio.
+                    
+                    break;
+                case TypeItem.Field:
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                    }
+                    break;
+                case TypeItem.Item:
+                    
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                    }
+                    break;
+                case TypeItem.Tree:
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                    }
+                    break;
+                case TypeItem.Door:
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                    }
+                    break;
+                case TypeItem.Wall:
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                    }
+                    break;
+                case TypeItem.Stair:
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    {
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                    }
+                    break;
+            }
+
         }
     }
 }

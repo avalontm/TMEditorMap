@@ -13,10 +13,23 @@ namespace TMEditorMap.Engine
     public class MapTile
     {
         SpriteBatch _spriteBatch;
+        Texture2D _pzTexture;
 
         public MapTile(SpriteBatch spriteBatch)
         {
             _spriteBatch = spriteBatch;
+        }
+
+        void DrawPZ(Rectangle pos, Color color)
+        {
+            Rectangle rectangle = new Rectangle((int)pos.X, (int)pos.Y, TMBaseMap.TileSize, TMBaseMap.TileSize);
+            if (_pzTexture == null)
+            {
+                _pzTexture = new Texture2D(_spriteBatch.GraphicsDevice, 1, 1);
+                _pzTexture.SetData<Color>(new Color[] { Color.White });
+            }
+
+            _spriteBatch.Draw(_pzTexture, new Rectangle(rectangle.X, rectangle.Y, TMBaseMap.TileSize, TMBaseMap.TileSize), color * 0.5f);
         }
 
         public void DrawTileBase(int floor_current, int x, int y, float tmpX, float tmpY, bool drawFloor = true)
@@ -30,6 +43,10 @@ namespace TMEditorMap.Engine
                 if (MapManager.MapBase.Floors[floor_current][x, y].item.Id > 1)
                 {
                     _spriteBatch.Draw(MapManager.MapBase.Floors[floor_current][x, y].item.Sprites[index].Sprite1, Utils.GetTileDestine(tmpX, tmpY), null, Color.White);
+                    if (MapManager.MapBase.Floors[floor_current][x, y].isPZ)
+                    {
+                        DrawPZ(Utils.GetTileDestine(tmpX, tmpY), Color.Green);
+                    }
                 }
             }
 
