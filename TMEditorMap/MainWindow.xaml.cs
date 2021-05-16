@@ -35,6 +35,7 @@ namespace TMEditorMap
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public static MainWindow Instance { private set; get; }
         static string root = System.IO.Directory.GetCurrentDirectory();
 
         ObservableCollection<TMSprite> _sprites;
@@ -139,12 +140,14 @@ namespace TMEditorMap
         public MainWindow()
         {
             InitializeComponent();
+            Instance = this;
             sprites = new ObservableCollection<TMSprite>();
             DataContext = this;
         }
 
         void onLoaded(object sender, RoutedEventArgs e)
         {
+            Instance = this;
             TMInstance.Init(false, true);
             onLoadItems();
             isLoaded = true;
@@ -152,7 +155,7 @@ namespace TMEditorMap
 
         void onUnloaded(object sender, RoutedEventArgs e)
         {
-
+            Instance = null;
         }
 
         void onSizeChanged(object sender, SizeChangedEventArgs e)
@@ -160,6 +163,7 @@ namespace TMEditorMap
             if (MapManager.Camera != null)
             {
                 MapManager.Camera.Update();
+                onLoadScrolls(false);
             }
         }
 
@@ -210,6 +214,8 @@ namespace TMEditorMap
         {
             Title = $"{MapManager.MapBase.mapInfo.Name} - [{FileMap}]";
             onLoadScrolls();
+
+            MapManager.Camera.ToMove((int)hScroll.Value, (int)vScroll.Value);
         }
 
         void onSave(object sender, RoutedEventArgs e)
@@ -415,15 +421,25 @@ namespace TMEditorMap
             }
         }
 
-        void onLoadScrolls()
+        void onLoadScrolls(bool _isnew =true)
         {
             hScroll.Minimum = 0;
-            hScroll.Value = 0;
-            hScroll.Maximum = MapManager.MapBase.mapInfo.Size.X;
+
+            if (_isnew)
+            {
+                hScroll.Value = 0;
+            }
+
+            hScroll.Maximum = MapManager.MapBase.mapInfo.Size.X - (MapCore.Instance.ActualWidth / TMBaseMap.TileSize);
 
             vScroll.Minimum = 0;
-            vScroll.Value = 0;
-            vScroll.Maximum = MapManager.MapBase.mapInfo.Size.Y;
+
+            if (_isnew)
+            {
+                vScroll.Value = 0;
+            }
+
+            vScroll.Maximum = MapManager.MapBase.mapInfo.Size.Y - (MapCore.Instance.ActualWidth / TMBaseMap.TileSize);
         }
 
         void onScrollHorizontalChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -433,7 +449,7 @@ namespace TMEditorMap
 
         void onScrollVerticalChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            MapManager.Camera.ToMove((int)hScroll.Value, (int)vScroll.Value);
+            MapManager.Camera.ToMove((int)hScroll.Value , (int)vScroll.Value);
         }
 
         void onMapMouseMove(object sender, MouseEventArgs e)

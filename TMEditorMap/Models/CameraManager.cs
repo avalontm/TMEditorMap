@@ -21,8 +21,9 @@ namespace TMEditorMap.Models
 
         public void ToMove(int x, int y)
         {
-            int _screenWidth = (int)((x+1) + (MapCore.Instance.ActualWidth / TMBaseMap.TileSize));
-            int _screenHeight = (int)((y+1) + (MapCore.Instance.ActualHeight / TMBaseMap.TileSize));
+            Debug.WriteLine($"[ToMove] {x},{y}");
+            int _screenWidth = (int)((x + 1) + (MapCore.Instance.ActualWidth / TMBaseMap.TileSize));
+            int _screenHeight = (int)((y + 1) + (MapCore.Instance.ActualHeight / TMBaseMap.TileSize));
 
             if (MapManager.MapBase != null)
             {
@@ -38,7 +39,7 @@ namespace TMEditorMap.Models
             }
 
             Screen = new Rectangle(x, y, _screenWidth, _screenHeight);
-            Scroll = new Vector2(Screen.X * TMBaseMap.TileSize, Screen.Y * TMBaseMap.TileSize);
+            Scroll = new Vector2(Screen.X , Screen.Y);
         }
 
         public void Update()

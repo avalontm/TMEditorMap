@@ -22,8 +22,12 @@ namespace TMEditorMap.Engine
         public static TMBaseMap MapBase;
         public static List<TMSprite> Items;
         public static CameraManager Camera;
+
+        public static bool UseDebug =false;
+        public static bool UseAnimtaion = true;
+
         static MapTile mapTile;
-        public static bool Debug;
+        static int TimeItem = 250;
 
         #endregion
 
@@ -34,15 +38,82 @@ namespace TMEditorMap.Engine
             Camera.ToMove(0,0);
         }
 
+        public static void Update(GameTime time)
+        {
+            if (MapBase != null && MapBase.Floors.Count > 0)
+            {
+                if (UseAnimtaion)
+                {
+                    onAnimateFloorCurrent(time);
+                }
+            }
+        }
+
         public static void Draw(GameTime time) 
         {
             if (MapBase != null && MapBase.Floors.Count > 0)
             {
-                onDrawFloorCurrent();
+                onDrawFloorCurrent(time);
             }
         }
 
-        static void onDrawFloorCurrent()
+        static void onAnimateFloorCurrent(GameTime gameTime)
+        {
+            // UPDATE TILE LAYER
+            for (int y = Camera.Screen.Y; y < Camera.Screen.Height; y++)
+            {
+                for (int x = Camera.Screen.X; x < Camera.Screen.Width; x++)
+                {
+                    if (MapBase.Floors[FloorCurrent][x, y].item != null)
+                    {
+                        var _item = MapBase.Floors[FloorCurrent][x, y].item;
+
+                        if (_item.isAnimation)
+                        {
+                            _item.TimeAnimation += (float)(gameTime.ElapsedGameTime.TotalMilliseconds * _item.AniSpeed);
+
+                            if (_item.TimeAnimation > TimeItem)//FPS?
+                            {
+                                _item.TimeAnimation = 0;
+                                _item.IndexAnimation++;
+
+                                if (_item.IndexAnimation == _item.Textures.Count)
+                                {
+                                    _item.IndexAnimation = 0;
+                                }
+                            }
+                        }
+                    }
+
+                    if (MapBase.Floors[FloorCurrent][x, y].items != null)
+                    {
+                        for (var a = 0; a < MapBase.Floors[FloorCurrent][x, y].items.Count; a++)
+                        {
+                            var _item = MapBase.Floors[FloorCurrent][x, y].items[a];
+
+                            if (_item.isAnimation)
+                            {
+                                _item.TimeAnimation += (float)(gameTime.ElapsedGameTime.TotalMilliseconds * _item.AniSpeed);
+
+                                if (_item.TimeAnimation > TimeItem) //FPS?
+                                {
+                                    _item.TimeAnimation = 0;
+                                    _item.IndexAnimation++;
+
+                                    if (_item.IndexAnimation == _item.Sprites.Count)
+                                    {
+                                        _item.IndexAnimation = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                } //Y
+            } //X
+        }
+
+        static void onDrawFloorCurrent(GameTime gameTime)
         {
             // DRAW FLOOR LAYER
             for (int y = Camera.Screen.Y; y < Camera.Screen.Height; y++)
@@ -50,8 +121,8 @@ namespace TMEditorMap.Engine
                 for (int x = Camera.Screen.X; x < Camera.Screen.Width; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Scroll.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Scroll.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - (Camera.Scroll.X * TMBaseMap.TileSize));
+                    float tmpY = ((y * TMBaseMap.TileSize) - (Camera.Scroll.Y * TMBaseMap.TileSize));
 
                     if (MapBase.Floors[FloorCurrent][x, y].item != null)
                     {
@@ -66,8 +137,8 @@ namespace TMEditorMap.Engine
                 for (int x = Camera.Screen.X; x < Camera.Screen.Width; x++)
                 {
                     //COORDENADAS
-                    float tmpX = ((x * TMBaseMap.TileSize) - Camera.Scroll.X);
-                    float tmpY = ((y * TMBaseMap.TileSize) - Camera.Scroll.Y);
+                    float tmpX = ((x * TMBaseMap.TileSize) - (Camera.Scroll.X * TMBaseMap.TileSize));
+                    float tmpY = ((y * TMBaseMap.TileSize) - (Camera.Scroll.Y * TMBaseMap.TileSize));
 
                     if (MapBase.Floors[FloorCurrent][x, y].item != null)
                     {

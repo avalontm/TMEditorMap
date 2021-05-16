@@ -35,6 +35,7 @@ namespace TMEditorMap.Engine
         public void DrawTileBase(int floor_current, int x, int y, float tmpX, float tmpY, bool drawFloor = true)
         {
             int index = MapManager.MapBase.Floors[floor_current][x, y].item.IndexAnimation;
+
             Vector2 offset = Vector2.Zero;
             int items = 0;
 
@@ -54,6 +55,8 @@ namespace TMEditorMap.Engine
             {
                 foreach (var item in MapManager.MapBase.Floors[floor_current][x, y].items)
                 {
+                    index = item.IndexAnimation;
+
                     if (item.isOffset)
                     {
                         offset = new Vector2(-8, -8);

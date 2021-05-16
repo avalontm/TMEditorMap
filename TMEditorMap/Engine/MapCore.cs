@@ -10,6 +10,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using TMEditorMap.Windows;
 using TMFormat.Enums;
 using TMFormat.Formats;
 
@@ -99,6 +101,8 @@ namespace TMEditorMap.Engine
         }
 
         KeyboardState _previousState;
+        MouseState _lastMouseState;
+
         KeyboardState _keyboardState;
         public KeyboardState KeyboardState
         {
@@ -161,11 +165,12 @@ namespace TMEditorMap.Engine
 
         protected override void Update(GameTime time)
         {
+            base.Update(time);
             // every update we can now query the keyboard & mouse for our WpfGame
             MouseState = _mouse.GetState();
             KeyboardState = _keyboard.GetState();
 
-            GlobalPos = new Vector2((MouseState.X/ TMBaseMap.TileSize) +MapManager.Camera.Scroll.X, (MouseState.Y / TMBaseMap.TileSize) + MapManager.Camera.Scroll.Y);
+            GlobalPos = new Vector2((MouseState.X / TMBaseMap.TileSize) + MapManager.Camera.Scroll.X, (MouseState.Y / TMBaseMap.TileSize) + MapManager.Camera.Scroll.Y);
             ScreenPos = new Vector2((MouseState.X / TMBaseMap.TileSize), (MouseState.Y / TMBaseMap.TileSize));
 
             if (MapManager.MapBase != null)
@@ -201,9 +206,31 @@ namespace TMEditorMap.Engine
                     }
                    
                 }
+
+                if (MouseState.RightButton == ButtonState.Pressed && _lastMouseState.RightButton == ButtonState.Released)
+                {
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item != null)
+                    {
+                        if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                        {
+                            foreach (var item in MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items)
+                            {
+                                switch ((TypeItem)item.Type)
+                                {
+                                    case TypeItem.Field:
+                                        onField(item);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             _previousState = KeyboardState;
+            _lastMouseState = MouseState;
+
+            MapManager.Update(time);
         }
 
         protected override void Draw(GameTime time)
@@ -299,11 +326,14 @@ namespace TMEditorMap.Engine
                 return;
             }
 
+            TMSprite Item = new TMSprite();
+            Item.Copy(ItemSelect);
+
             switch ((TypeItem)ItemSelect.Type)
             {
                 case TypeItem.Tile:
 
-                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item = ItemSelect;
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].item = Item;
 
                     if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
                     {
@@ -323,53 +353,92 @@ namespace TMEditorMap.Engine
                         MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
                     }
 
-                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Insert(0, ItemSelect); //Borde en el principio.
-                    
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Insert(0, Item); //Borde en el principio.
+
                     break;
                 case TypeItem.Field:
 
-                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
                     {
-                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
                     }
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(Item); //Agregamos hasta final
+
                     break;
                 case TypeItem.Item:
-                    
-                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
                     {
-                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
                     }
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(Item); //Agregamos hasta final
+
                     break;
                 case TypeItem.Tree:
 
-                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
                     {
-                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
                     }
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(Item); //Agregamos hasta final
+
                     break;
                 case TypeItem.Door:
 
-                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
                     {
-                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
                     }
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(Item); //Agregamos hasta final
                     break;
                 case TypeItem.Wall:
 
-                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
                     {
-                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
                     }
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(Item); //Agregamos hasta final
+
                     break;
                 case TypeItem.Stair:
 
-                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items != null)
+                    if (MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items == null) // Items
                     {
-                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(ItemSelect); //Agregamos hasta final
+                        MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items = new List<TMSprite>();
                     }
+
+                    MapManager.MapBase.Floors[MapManager.FloorCurrent][(int)GlobalPos.X, (int)GlobalPos.Y].items.Add(Item); //Agregamos hasta final
+
                     break;
             }
 
         }
+
+        void onField(TMSprite item)
+        {
+            switch ((TypeField)item.Field)
+            {
+                case TypeField.None:
+
+                    break;
+                case TypeField.Fire:
+
+                    break;
+                case TypeField.Teleport:
+                    if (TeleportWindow.Instance == null)
+                    {
+                        TeleportWindow frm = new TeleportWindow(item);
+                        frm.Owner = MainWindow.Instance;
+                        frm.ShowDialog();
+                    }
+                    break;
+            }
+        }
+
     }
 }
