@@ -335,6 +335,8 @@
         <Style TargetType="local:MainWindow" BasedOn="{StaticResource  myWindowStyle}"/>
         <Style TargetType="windows:MapInfoWindow" BasedOn="{StaticResource  myWindowStyle}"/>
         <Style TargetType="windows:TeleportWindow" BasedOn="{StaticResource  myWindowStyle}"/>
+        <Style TargetType="windows:SignWindow" BasedOn="{StaticResource  myWindowStyle}"/>
         
+
     </Application.Resources>
 </Application>

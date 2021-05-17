@@ -133,15 +133,15 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Grid.Column="0">
-                        <Label Margin="5,0,0,0" Content="{Binding Mouse.X, FallbackValue='X: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="X: {0}"/>
+                        <Label Margin="5,0,0,0" Content="{Binding Mouse.X, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='X: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="X: {0}"/>
                     </Grid>
 
                     <Grid Grid.Column="1">
-                        <Label Margin="5,0,0,0" Content="{Binding Mouse.Y, FallbackValue='Y: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Y: {0}"/>
+                        <Label Margin="5,0,0,0" Content="{Binding Mouse.Y, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='Y: 0'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Y: {0}"/>
                     </Grid>
 
                     <Grid Grid.Column="2">
-                        <Label Margin="5,0,0,0" Content="{Binding CurrentFloor, FallbackValue='Z: 7'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Z: {0}"/>
+                        <Label Margin="5,0,0,0" Content="{Binding CurrentFloor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='Z: 7'}" FontSize="14" FontWeight="DemiBold" ContentStringFormat="Z: {0}"/>
                     </Grid>
                 </Grid>
             </Grid>

@@ -423,23 +423,26 @@ namespace TMEditorMap
 
         void onLoadScrolls(bool _isnew =true)
         {
-            hScroll.Minimum = 0;
-
-            if (_isnew)
+            if (MapManager.MapBase != null)
             {
-                hScroll.Value = 0;
+                hScroll.Minimum = 0;
+
+                if (_isnew)
+                {
+                    hScroll.Value = 0;
+                }
+
+                hScroll.Maximum = MapManager.MapBase.mapInfo.Size.X - (MapCore.Instance.ActualWidth / TMBaseMap.TileSize);
+
+                vScroll.Minimum = 0;
+
+                if (_isnew)
+                {
+                    vScroll.Value = 0;
+                }
+
+                vScroll.Maximum = MapManager.MapBase.mapInfo.Size.Y - (MapCore.Instance.ActualWidth / TMBaseMap.TileSize);
             }
-
-            hScroll.Maximum = MapManager.MapBase.mapInfo.Size.X - (MapCore.Instance.ActualWidth / TMBaseMap.TileSize);
-
-            vScroll.Minimum = 0;
-
-            if (_isnew)
-            {
-                vScroll.Value = 0;
-            }
-
-            vScroll.Maximum = MapManager.MapBase.mapInfo.Size.Y - (MapCore.Instance.ActualWidth / TMBaseMap.TileSize);
         }
 
         void onScrollHorizontalChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -453,6 +456,12 @@ namespace TMEditorMap
         }
 
         void onMapMouseMove(object sender, MouseEventArgs e)
+        {
+            Mouse = new Point(MapCore.Instance.GlobalPos.X, MapCore.Instance.GlobalPos.Y);
+            CurrentFloor = MapManager.FloorCurrent;
+        }
+
+        void onMapKeyDown(object sender, KeyEventArgs e)
         {
             Mouse = new Point(MapCore.Instance.GlobalPos.X, MapCore.Instance.GlobalPos.Y);
             CurrentFloor = MapManager.FloorCurrent;
@@ -491,11 +500,6 @@ namespace TMEditorMap
 
             button.IsChecked = true;
 
-        }
-
-        void onMapKeyDown(object sender, KeyEventArgs e)
-        {
-            CurrentFloor = MapManager.FloorCurrent;
         }
 
         void onMapProperties(object sender, RoutedEventArgs e)

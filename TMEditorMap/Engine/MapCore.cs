@@ -165,7 +165,6 @@ namespace TMEditorMap.Engine
 
         protected override void Update(GameTime time)
         {
-            base.Update(time);
             // every update we can now query the keyboard & mouse for our WpfGame
             MouseState = _mouse.GetState();
             KeyboardState = _keyboard.GetState();
@@ -177,16 +176,17 @@ namespace TMEditorMap.Engine
             {
                 if (KeyboardState.IsKeyDown(Keys.OemPlus) && !_previousState.IsKeyDown(Keys.OemPlus) || KeyboardState.IsKeyDown(Keys.Add) && !_previousState.IsKeyDown(Keys.Add))
                 {
+                    if (MapManager.FloorCurrent < (MapManager.MapBase.Floors.Count - 1))
+                    {
+                        MapManager.FloorCurrent++;
+                    }
+                }
+
+                if (KeyboardState.IsKeyDown(Keys.OemMinus) && !_previousState.IsKeyDown(Keys.OemMinus) || KeyboardState.IsKeyDown(Keys.Subtract) && !_previousState.IsKeyDown(Keys.Subtract))
+                {
                     if (MapManager.FloorCurrent > 0)
                     {
                         MapManager.FloorCurrent--;
-                    }
-                }
-                if (KeyboardState.IsKeyDown(Keys.OemMinus) && !_previousState.IsKeyDown(Keys.OemMinus) || KeyboardState.IsKeyDown(Keys.Subtract) && !_previousState.IsKeyDown(Keys.Subtract))
-                {
-                    if (MapManager.FloorCurrent < (MapManager.MapBase.Floors.Count-1))
-                    {
-                        MapManager.FloorCurrent++;
                     }
                 }
 
@@ -217,6 +217,9 @@ namespace TMEditorMap.Engine
                             {
                                 switch ((TypeItem)item.Type)
                                 {
+                                    case TypeItem.Item:
+                                        onItemProperties(item);
+                                        break;
                                     case TypeItem.Field:
                                         onField(item);
                                         break;
@@ -227,11 +230,13 @@ namespace TMEditorMap.Engine
                 }
             }
 
+            MapManager.Update(time);
+            base.Update(time);
+
             _previousState = KeyboardState;
             _lastMouseState = MouseState;
-
-            MapManager.Update(time);
         }
+
 
         protected override void Draw(GameTime time)
         {
@@ -440,5 +445,21 @@ namespace TMEditorMap.Engine
             }
         }
 
+        void onItemProperties(TMSprite item)
+        {
+            Debug.WriteLine($"[onItemProperties] {item.isReader}");
+
+            if (item.isReader)
+            {
+                if (SignWindow.Instance == null)
+                {
+                    SignWindow frm = new SignWindow(item);
+                    frm.Owner = MainWindow.Instance;
+                    frm.ShowDialog();
+                }
+                return;
+            }
+        
+        }
     }
 }

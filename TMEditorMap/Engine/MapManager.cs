@@ -53,8 +53,27 @@ namespace TMEditorMap.Engine
         {
             if (MapBase != null && MapBase.Floors.Count > 0)
             {
-                onDrawFloorCurrent(time);
+                if (!isDungeon())
+                {
+                    for (int z = FloorCurrent; z <= FloorDefault; z++)
+                    {
+                        onDrawFloor(z);
+                    }
+                }
+
+                onDrawFloorCurrent();
+
             }
+        }
+
+
+        static bool isDungeon()
+        {
+            if (FloorCurrent > FloorDefault)
+            {
+                return true;
+            }
+            return false;
         }
 
         static void onAnimateFloorCurrent(GameTime gameTime)
@@ -113,7 +132,7 @@ namespace TMEditorMap.Engine
             } //X
         }
 
-        static void onDrawFloorCurrent(GameTime gameTime)
+        static void onDrawFloorCurrent()
         {
             // DRAW FLOOR LAYER
             for (int y = Camera.Screen.Y; y < Camera.Screen.Height; y++)
@@ -126,7 +145,7 @@ namespace TMEditorMap.Engine
 
                     if (MapBase.Floors[FloorCurrent][x, y].item != null)
                     {
-                        mapTile.DrawTileBase(FloorCurrent, x, y, tmpX, tmpY);
+                        mapTile.DrawTileBase(FloorCurrent, x, y, tmpX, tmpY, Color.White);
                     }
                 }
             }
@@ -142,7 +161,50 @@ namespace TMEditorMap.Engine
 
                     if (MapBase.Floors[FloorCurrent][x, y].item != null)
                     {
-                        mapTile.DrawTileTop(FloorCurrent, x, y, tmpX, tmpY);
+                        mapTile.DrawTileTop(FloorCurrent, x, y, tmpX, tmpY, Color.White);
+                    }
+                }
+            }
+        }
+
+        static void onDrawFloor(int FloorIndex)
+        {
+            int _floor = FloorDefault;
+
+            // DRAW FLOOR LAYER
+            for (int y = Camera.Screen.Y; y < Camera.Screen.Height; y++)
+            {
+                for (int x = Camera.Screen.X; x < Camera.Screen.Width; x++)
+                {
+                    //COORDENADAS
+                    float tmpX = ((x * TMBaseMap.TileSize) - (Camera.Scroll.X * TMBaseMap.TileSize));
+                    float tmpY = ((y * TMBaseMap.TileSize) - (Camera.Scroll.Y * TMBaseMap.TileSize));
+
+                    tmpX += (TMBaseMap.TileSize * (_floor - FloorIndex));
+                    tmpY += (TMBaseMap.TileSize * (_floor - FloorIndex));
+
+                    if (MapBase.Floors[FloorIndex][x, y].item != null)
+                    {
+                        mapTile.DrawTileBase(FloorIndex, x, y, tmpX, tmpY, Color.DarkGray);
+                    }
+                }
+            }
+
+            // DRAW TOP LAYER
+            for (int y = Camera.Screen.Y; y < Camera.Screen.Height; y++)
+            {
+                for (int x = Camera.Screen.X; x < Camera.Screen.Width; x++)
+                {
+                    //COORDENADAS
+                    float tmpX = ((x * TMBaseMap.TileSize) - (Camera.Scroll.X * TMBaseMap.TileSize));
+                    float tmpY = ((y * TMBaseMap.TileSize) - (Camera.Scroll.Y * TMBaseMap.TileSize));
+
+                    tmpX += (TMBaseMap.TileSize * (_floor - FloorIndex));
+                    tmpY += (TMBaseMap.TileSize * (_floor - FloorIndex));
+
+                    if (MapBase.Floors[FloorIndex][x, y].item != null)
+                    {
+                        mapTile.DrawTileTop(FloorIndex, x, y, tmpX, tmpY, Color.DarkGray);
                     }
                 }
             }
