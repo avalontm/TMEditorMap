@@ -51,6 +51,7 @@ namespace TMEditorMap.Helpers
             }
         }
 
+        /*
         public static Texture2D ToTexture2D(this byte[] byteArray)
         {
             using (MemoryStream stream = new MemoryStream(byteArray))
@@ -58,6 +59,8 @@ namespace TMEditorMap.Helpers
                return Texture2D.FromStream(MapCore.Instance.DeviceManager.GraphicsDevice, stream);
             }
         }
+        */
+
 
         public static List<DependencyObject> FindAllChildren(this DependencyObject dpo, Predicate<DependencyObject> predicate)
         {

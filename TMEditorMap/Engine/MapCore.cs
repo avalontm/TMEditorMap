@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TMEditorMap.Windows;
+using TMFormat;
 using TMFormat.Enums;
 using TMFormat.Formats;
 
@@ -148,19 +149,22 @@ namespace TMEditorMap.Engine
             _keyboard = new WpfKeyboard(this);
             _mouse = new WpfMouse(this);
             
-            // must be called after the WpfGraphicsDeviceService instance was created
-            base.Initialize();
 
             // content loading now possible
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             MapManager.Init(_spriteBatch);
+            TMInstance.GraphicsDevice = DeviceManager.GraphicsDevice;
+
+            // must be called after the WpfGraphicsDeviceService instance was created
+            base.Initialize();
 
         }
 
         protected override void LoadContent()
         {
             base.LoadContent();
+            MainWindow.Instance.onLoadItems();
         }
 
         protected override void Update(GameTime time)

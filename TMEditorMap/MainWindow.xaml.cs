@@ -149,7 +149,6 @@ namespace TMEditorMap
         {
             Instance = this;
             TMInstance.Init(false, true);
-            onLoadItems();
             isLoaded = true;
         }
 
@@ -307,7 +306,7 @@ namespace TMEditorMap
             await Task.Delay(10);
         }
 
-        async void onLoadItems()
+        public async void onLoadItems()
         {
             string dataDir = Path.Combine(root, "data");
 

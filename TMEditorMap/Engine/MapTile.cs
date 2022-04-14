@@ -7,6 +7,7 @@ using System.Text;
 using TMEditorMap.Helpers;
 using TMFormat.Enums;
 using TMFormat.Formats;
+using TMFormat.Helpers;
 
 namespace TMEditorMap.Engine
 {
