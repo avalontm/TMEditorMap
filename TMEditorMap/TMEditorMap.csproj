@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WpfInterop" Version="1.9.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+    <PackageReference Include="MonoGame.Framework.WpfInterop" Version="1.9.2" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.8" />
   </ItemGroup>
 
   <ItemGroup>
